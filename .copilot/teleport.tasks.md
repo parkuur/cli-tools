@@ -406,13 +406,13 @@ Reference documents:
 
 ## Step 9 — Packaging
 
-- [ ] Confirm `[project.scripts]` entry `tp-cli = "cli_layer.teleport_cli:main"` is correct in `pyproject.toml`
-- [ ] `uv build` — wheel and sdist produced in `dist/` without errors
-- [ ] Install wheel into a clean isolated environment and verify `tp-cli --help` works
-- [ ] `uv run pytest` — all tests (unit + integration) still green after build
-- [ ] Tag `v0.1.0` and confirm CI passes on the tag
+- [x] Confirm `[project.scripts]` entry `tp-cli = "cli_layer.teleport_cli:main"` is correct in `pyproject.toml`
+- [x] `uv build` — wheel and sdist produced in `dist/` without errors
+- [x] Install wheel into a clean isolated environment and verify `tp-cli --help` works
+- [x] `uv run pytest` — all tests (unit + integration) still green after build
+- [x] Tag `v0.1.0` and confirm CI passes on the tag
 
-**Gate**: wheel installs cleanly, `tp-cli --help` works, all tests green.
+**Gate**: wheel installs cleanly, `tp-cli --help` works, all tests green. ✅
 
 ---
 
@@ -428,7 +428,7 @@ Reference documents:
 | 6 — `cli_layer` | ✅ Complete | 31 / 31 |
 | 7 — Shell snippets | ✅ Complete | 5 / 5 |
 | 8 — CI | ✅ Complete | — |
-| 9 — Packaging | ⬜ Not started | — |
+| 9 — Packaging | ✅ Complete | — |
 | **Total** | | **127 / 127** |
 
 Status key: ⬜ Not started · 🔄 In progress · ✅ Complete
