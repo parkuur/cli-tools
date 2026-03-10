@@ -98,11 +98,11 @@ jobs:
       - name: Run mypy
         run: uv run mypy --strict src
       - name: Prepare reports directory
-        run: mkdir -p reports
+        run: uv run python -c "from pathlib import Path; Path('reports').mkdir(parents=True, exist_ok=True)"
       - name: Run unit tests
         run: uv run pytest -m unit tests/unit/ --junitxml=reports/unit-${{ matrix.os }}.xml --cov=src --cov-report=xml:reports/coverage-${{ matrix.os }}.xml
       - name: Prepare reports directory
-        run: mkdir -p reports
+        run: uv run python -c "from pathlib import Path; Path('reports').mkdir(parents=True, exist_ok=True)"
       - name: Run integration tests
         run: uv run pytest -m integration tests/integration/ --junitxml=reports/integration-${{ matrix.os }}.xml
       - name: Run shell wrapper tests (non-Windows)

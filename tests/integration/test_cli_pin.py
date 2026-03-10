@@ -26,7 +26,7 @@ def test_pin_explicit_path(run_tp: Runner) -> None:
     assert res.returncode == 0
     shown = run_tp("-s", "work")
     assert shown.returncode == 0
-    assert "/tmp" in shown.stderr
+    assert "/tmp" in shown.stderr.replace("\\", "/")
 
 
 @pytest.mark.integration
@@ -42,7 +42,7 @@ def test_pin_overwrite(run_tp: Runner) -> None:
     r = run_tp("-p", "--force", "work", "/b")
     assert r.returncode == 0
     shown = run_tp("-s", "work")
-    assert "/b" in shown.stderr
+    assert "/b" in shown.stderr.replace("\\", "/")
 
 
 @pytest.mark.integration

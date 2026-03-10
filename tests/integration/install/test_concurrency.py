@@ -13,7 +13,14 @@ def _run_installer_async(
     env["PYTHONPATH"] = str(Path.cwd() / "src")
     venv_bin = str(Path(sys.executable).parent)
     env["PATH"] = venv_bin + os.pathsep + env.get("PATH", "")
-    return subprocess.Popen(["bash", str(script), *args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env)
+    cmd = ["bash", str(script), *args]
+    return subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        env=env,
+    )
 
 
 def test_installer_locks_manifest_during_write(tmp_path: Path) -> None:

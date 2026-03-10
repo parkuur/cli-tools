@@ -30,7 +30,13 @@ def test_update_marker_checksum(tmp_path: Path) -> None:
 
     p = tmp_path / "install_manifest.json"
     marker = "teleport#tp.bash"
-    manifest.add_marker(p, marker, "src/cli_layer/shell_snippets/tp.bash", ["/tmp/.bashrc"], "abc123")
+    manifest.add_marker(
+        p,
+        marker,
+        "src/cli_layer/shell_snippets/tp.bash",
+        ["/tmp/.bashrc"],
+        "abc123",
+    )
     manifest.update_marker(p, marker, checksum="def456")
     got = manifest.get_marker(p, marker)
     assert got is not None
