@@ -34,7 +34,7 @@ def test_show_single(run_tp: Runner) -> None:
     run_tp("-p", "work", "/tmp")
     r = run_tp("-s", "work")
     assert r.returncode == 0
-    assert "/tmp" in r.stderr
+    assert "/tmp" in r.stderr.replace("\\", "/")
     assert r.stdout == ""
 
 
