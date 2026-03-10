@@ -141,7 +141,8 @@ def install(args: argparse.Namespace) -> int:
                 comment=profile.COMMENT_SYNTAX.get(shell, "#"),
             )
 
-            if existing and existing.get("checksum") == checksum and current_block == expected_block:
+            cond_checksum = existing and existing.get("checksum") == checksum
+            if cond_checksum and current_block == expected_block:
                 print(f"[noop] {prof}", file=sys.stderr)
                 counts["noop"] += 1
                 continue
@@ -253,7 +254,11 @@ def uninstall(args: argparse.Namespace) -> int:
                         p for p in (meta.get("profiles", []) or []) if p != str(prof)
                     ]
                     if remaining_profiles:
-                        manifest.update_marker(manifest_path, marker_tp, profiles=remaining_profiles)
+                        manifest.update_marker(
+                            manifest_path,
+                            marker_tp,
+                            profiles=remaining_profiles,
+                        )
                     else:
                         manifest.remove_marker(manifest_path, marker_tp)
                 print(f"[uninstall] removed from {prof}", file=sys.stderr)

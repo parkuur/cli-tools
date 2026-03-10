@@ -6,7 +6,8 @@ import os
 import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
+from collections.abc import Iterator
 from contextlib import contextmanager
 
 fcntl: Any
