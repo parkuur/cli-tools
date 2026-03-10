@@ -1,7 +1,7 @@
 # Continuous Integration — Implementation Tasks
 
 Last updated: 2026-03-10
-Status: **In progress**
+Status: **Completed**
 
 Reference documents:
 - Spec: [ci.spec.md](ci.spec.md)
@@ -95,9 +95,10 @@ Reference documents:
 
 ## Phase 4 — Branch protection
 
-- [ ] **4.1** Configure branch protection rules on `main`
-  - [ ] Require all CI jobs to pass before merge
-  - [ ] Require up-to-date branches before merging
+- [x] **4.1** Configure branch protection rules on `main`
+  - [x] Require all CI jobs to pass before merge
+  - [x] Require up-to-date branches before merging
+  - [x] Applied via GitHub API on 2026-03-10 for all CI checks
 
 ---
 
@@ -108,4 +109,4 @@ Reference documents:
 | 1 — Core workflow | ✅ Completed | Workflow added and validated locally |
 | 2 — Cross-platform | ✅ Completed | Matrix stabilized on Linux/macOS/Windows; run `22920089341` green |
 | 3 — Artifacts + cache | ✅ Completed | Reports and caching steps added; local run verified |
-| 4 — Branch protection | ⬜ Not started | Depends on Phase 2+3 |
+| 4 — Branch protection | ✅ Completed | Required checks + strict up-to-date enabled on `main` |
