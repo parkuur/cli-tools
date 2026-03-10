@@ -9,15 +9,42 @@ This repository bootstraps the project layout used by the teleport implementatio
 - Pin frequently used directories to short aliases.
 - Quickly jump to pinned paths.
 - Intuitive directory history (jump back to the last path using `-`).
+- Easily jump to home directory using `tp`.
+- Seamless cross-platform shell integration (Bash, Zsh, Fish, PowerShell, Cmd).
+- State persistence utilizing a shared SQLite database (`cli-tools.db`).
+- Idempotent and updatable shell snippet installation.
 - Built with Python 3.12+, Typer, and Rich.
 
 ## Installation
 
-### 1. Install the Python Package
+### Prerequisites
 
-You can install the package directly or use a tool like `pipx` or `pip`:
+The install scripts (`./scripts/install-shell-snippet.sh` and `./scripts/install-shell-snippet.ps1`) expect the `uv` tool to be available on your PATH. The scripts will abort with an explanatory message if `uv` is not found.
+
+Recommended ways to make `uv` available:
+
+- Install with `pipx` (preferred):
 
 ```bash
+pipx install uv
+```
+
+- Or install to your user site-packages and ensure your user `bin` directory is on `PATH`:
+
+```bash
+python -m pip install --user uv
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+If your environment requires the installer to write to a different location (for example in CI or tests), you can set `CLI_TOOLS_DATA_DIR` to point to a writable directory. The install scripts honor this environment variable for data/cache placement.
+
+### 1. Install the Python Package
+
+You can install the package using a modern tool like `uv`, `pipx` or standard `pip`:
+
+```bash
+uv tool install .
+# or
 pip install .
 ```
 
@@ -30,16 +57,30 @@ To actually change directories in your terminal, the Python script is wrapped in
 Use the provided installation script:
 
 ```bash
-# For bash or zsh:
-./scripts/install-shell-snippet.sh bash >> ~/.bashrc
-# Or for zsh:
-./scripts/install-shell-snippet.sh zsh >> ~/.zshrc
+# Install/update (idempotent):
+./scripts/install-shell-snippet.sh bash
+./scripts/install-shell-snippet.sh zsh
+./scripts/install-shell-snippet.sh fish
 
-# For fish:
-./scripts/install-shell-snippet.sh fish >> ~/.config/fish/config.fish
+# Dry run (no file changes):
+./scripts/install-shell-snippet.sh bash --dry-run
+
+# Uninstall from selected shell profile:
+./scripts/install-shell-snippet.sh bash --uninstall
+
+# Disable / re-enable tp marker management:
+./scripts/install-shell-snippet.sh --no-tp
+./scripts/install-shell-snippet.sh --tp
+
+# Optional data directory override:
+CLI_TOOLS_DATA_DIR="$HOME/.local/share/cli-tools" ./scripts/install-shell-snippet.sh bash
+
+# Windows (PowerShell) invocation:
+./scripts/install-shell-snippet.ps1 --shell powershell
+./scripts/install-shell-snippet.ps1 --shell powershell --dry-run
 ```
 
-Restart your shell or `source` your configuration file after running the above.
+Restart your shell or source your configuration file after running the above.
 
 ## Usage
 
@@ -54,6 +95,9 @@ tp --pin docs /path/to/docs
 
 # Jump to the 'work' directory
 tp work
+
+# Jump to the home directory
+tp
 
 # Jump back to the previous directory
 tp -
@@ -76,18 +120,18 @@ The underlying Python script `tp-cli` handles arguments as follows:
 
 ## Development
 
-The project uses `hatchling` as its build backend and requires Python 3.12+.
+The project uses `hatchling` as its build backend and is managed by `uv` using PEP 735 dependency groups. It requires Python 3.12+.
 
 Run the tests (unit, integration, and shell wrapper tests) using `pytest`:
 
 ```bash
-pip install -e ".[dev]"
-pytest
+uv sync
+uv run pytest
 ```
 
-Linting and type checking are handled by `ruff` and `mypy`:
+Linting and type checking are handled by `ruff` and `mypy` (or `pyright` as noted in CI):
 
 ```bash
-ruff check .
-mypy .
+uv run ruff check .
+uv run mypy .
 ```

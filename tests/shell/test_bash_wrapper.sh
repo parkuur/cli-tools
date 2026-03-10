@@ -2,7 +2,9 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-source "$ROOT_DIR/src/cli_layer/shell_snippets/tp.bash"
+# The snippet uses {{TP_CLI}} as a placeholder for the installed executable path.
+# Substitute it with the bare name "tp-cli" so the mock function defined below is called.
+eval "$(sed 's|"{{TP_CLI}}"|tp-cli|g' "$ROOT_DIR/src/cli_layer/shell_snippets/tp.bash")"
 
 failures=0
 

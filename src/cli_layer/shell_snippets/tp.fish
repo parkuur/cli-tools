@@ -1,5 +1,5 @@
 function tp
-    set -l _out (tp-cli $argv)
+    set -l _out ("{{TP_CLI}}" $argv)
     set -l _status $status
     if test $_status -ne 0
         return $_status

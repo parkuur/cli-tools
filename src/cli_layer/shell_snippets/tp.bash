@@ -1,6 +1,6 @@
 tp() {
   local _out
-  _out="$(tp-cli "$@")"
+  _out="$("{{TP_CLI}}" "$@")"
   local _status=$?
   if [ $_status -ne 0 ]; then
     return $_status

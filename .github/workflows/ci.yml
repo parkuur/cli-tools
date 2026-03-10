@@ -2,40 +2,130 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
+
+env:
+  PYTHON_VERSION: "3.12"
 
 jobs:
-  test:
+  lint:
+    name: Lint (ruff)
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+      - name: Sync dev env
+        run: uv sync --group dev
+      - name: Run ruff
+        run: uv run ruff check src tests
+
+  type-check:
+    name: Type-check (mypy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+      - name: Sync dev env
+        run: uv sync --group dev
+      - name: Run mypy
+        run: uv run mypy --strict src
+
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+      - name: Cache .venv
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('uv.lock') }}
+          restore-keys: ${{ runner.os }}-venv-
+      - name: Sync dev env
+        run: uv sync --group dev
+      - name: Prepare reports directory
+        run: mkdir -p reports
+      - name: Run unit tests
+        run: uv run pytest -m unit tests/unit/ --junitxml=reports/unit.xml --cov=src --cov-report=xml:reports/coverage.xml
+      - name: Upload unit artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-reports
+          path: reports/
+
+  integration:
+    name: Integration tests
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.12]
-
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+      - name: Cache .venv
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('uv.lock') }}
+          restore-keys: ${{ runner.os }}-venv-
+      - name: Sync dev env
+        run: uv sync --group dev
+      - name: Run ruff
+        run: uv run ruff check src tests
+      - name: Run mypy
+        run: uv run mypy --strict src
+      - name: Prepare reports directory
+        run: mkdir -p reports
+      - name: Run unit tests
+        run: uv run pytest -m unit tests/unit/ --junitxml=reports/unit-${{ matrix.os }}.xml --cov=src --cov-report=xml:reports/coverage-${{ matrix.os }}.xml
+      - name: Prepare reports directory
+        run: mkdir -p reports
+      - name: Run integration tests
+        run: uv run pytest -m integration tests/integration/ --junitxml=reports/integration-${{ matrix.os }}.xml
+      - name: Run shell wrapper tests (non-Windows)
+        if: runner.os != 'Windows'
+        run: bash tests/shell/test_bash_wrapper.sh
+      - name: Upload integration artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-reports-${{ matrix.os }}
+          path: reports/
 
-      - name: Upgrade pip
-        run: python -m pip install --upgrade pip
-
-      - name: Install package editable + test deps
-        run: |
-          python -m pip install -e . || true
-          python -m pip install pytest typer pydantic portalocker rich
-
-      - name: Add lightweight uv shim
-        run: |
-          mkdir -p $GITHUB_WORKSPACE/.bin
-          printf '#!/usr/bin/env bash\nexec tp-cli "$@"\n' > $GITHUB_WORKSPACE/.bin/uv
-          chmod +x $GITHUB_WORKSPACE/.bin/uv
-          echo "$GITHUB_WORKSPACE/.bin" >> $GITHUB_PATH
-
-      - name: Run tests
-        run: pytest -q
+  shell-tests:
+    name: Shell wrapper tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+      - name: Sync dev env
+        run: uv sync --group dev
+      - name: Run bash wrapper script
+        run: bash tests/shell/test_bash_wrapper.sh
