@@ -387,20 +387,20 @@ Reference documents:
 
 ## Step 8 — CI
 
-- [ ] Create `.github/workflows/ci.yml`
-  - [ ] Matrix: `ubuntu-latest`, `macos-latest`, `windows-latest`
-  - [ ] Steps per job:
-    - [ ] `actions/checkout@v4`
-    - [ ] `astral-sh/setup-uv@v4`
-    - [ ] `uv sync --group dev`
-    - [ ] `uv run ruff check src tests`
-    - [ ] `uv run mypy --strict src`
-    - [ ] `uv run pytest -m unit`
-    - [ ] `uv run pytest -m integration`
-  - [ ] Separate `shell-tests` job on `ubuntu-latest` only running `bash tests/shell/test_bash_wrapper.sh`
-- [ ] Verify CI passes on all three platforms (push a branch)
+- [x] Create `.github/workflows/ci.yml`
+  - [x] Matrix: `ubuntu-latest`, `macos-latest`, `windows-latest`
+  - [x] Steps per job:
+    - [x] `actions/checkout@v4`
+    - [x] `astral-sh/setup-uv@v4`
+    - [x] `uv sync --group dev`
+    - [x] `uv run ruff check src tests`
+    - [x] `uv run mypy --strict src`
+    - [x] `uv run pytest -m unit`
+    - [x] `uv run pytest -m integration`
+  - [x] Separate `shell-tests` job on `ubuntu-latest` only running `bash tests/shell/test_bash_wrapper.sh`
+- [x] Verify CI passes on all three platforms (push a branch)
 
-**Gate**: all CI jobs green on `ubuntu-latest`, `macos-latest`, `windows-latest`.
+**Gate**: all CI jobs green on `ubuntu-latest`, `macos-latest`, `windows-latest`. ✅
 
 ---
 
@@ -427,7 +427,7 @@ Reference documents:
 | 5 — `teleport/service` | ✅ Complete | 25 / 25 |
 | 6 — `cli_layer` | ✅ Complete | 31 / 31 |
 | 7 — Shell snippets | ✅ Complete | 5 / 5 |
-| 8 — CI | ⬜ Not started | — |
+| 8 — CI | ✅ Complete | — |
 | 9 — Packaging | ⬜ Not started | — |
 | **Total** | | **127 / 127** |
 
