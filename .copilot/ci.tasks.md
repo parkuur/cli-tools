@@ -1,7 +1,7 @@
 # Continuous Integration — Implementation Tasks
 
 Last updated: 2026-03-10
-Status: **Completed**
+Status: **In progress**
 
 Reference documents:
 - Spec: [ci.spec.md](ci.spec.md)
@@ -54,17 +54,18 @@ Reference documents:
 
 ## Phase 2 — Cross-platform matrix
 
-- [ ] **2.1** Expand `integration` job to OS matrix
-  - [ ] Add `strategy.matrix.os: [ubuntu-latest, macos-latest, windows-latest]`
-  - [ ] Set `runs-on: ${{ matrix.os }}`
+- [x] **2.1** Expand `integration` job to OS matrix
+  - [x] Add `strategy.matrix.os: [ubuntu-latest, macos-latest, windows-latest]`
+  - [x] Set `runs-on: ${{ matrix.os }}`
 
-- [ ] **2.2** Triage platform-specific failures
-  - [ ] Fix any path separator issues on Windows tests
-  - [ ] Fix any permission test assumptions that don't apply on Windows (e.g., `chmod 0o600`)
-  - [ ] Ensure `pytest -m integration` selects the correct tests per platform
+- [x] **2.2** Triage platform-specific failures
+  - [x] Fix path separator issues on Windows tests
+  - [x] Use cross-platform reports directory creation in workflow (replace Unix-only `mkdir -p`)
+  - [x] Ensure `pytest -m integration` runs and passes on Windows
 
-- [ ] **2.3** Validate Phase 2
-  - [ ] All three OS runners pass green
+- [x] **2.3** Validate Phase 2
+  - [x] All three OS runners pass green
+  - [x] Verified in GitHub Actions run `22920089341`
 
 ---
 
@@ -105,6 +106,6 @@ Reference documents:
 | Phase | Status | Notes |
 |-------|--------|-------|
 | 1 — Core workflow | ✅ Completed | Workflow added and validated locally |
-| 2 — Cross-platform | ⬜ Not started | Depends on Phase 1; matrix ready to enable |
+| 2 — Cross-platform | ✅ Completed | Matrix stabilized on Linux/macOS/Windows; run `22920089341` green |
 | 3 — Artifacts + cache | ✅ Completed | Reports and caching steps added; local run verified |
 | 4 — Branch protection | ⬜ Not started | Depends on Phase 2+3 |
